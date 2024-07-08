@@ -1,10 +1,12 @@
 package or.datos;
 
+import or.conexion.Conexion;
 import or.dominio.Estudiante;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,8 +45,30 @@ public class EstudianteDao {
             }
         }
         return estudiantes;
-
     }
+    //findById
+    public boolean buscarEstudiantePorId(Estudiante estudiante) {
+        String sql = "SELECT * FROM estudiante WHERE id_estudiante = ?";
+
+        try (Connection con = Conexion.getConexion();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, estudiante.getIdEstudiante());
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    estudiante.setNombre(rs.getString("nombre"));
+                    estudiante.setApellido(rs.getString("apellido"));
+                    estudiante.setTelefono(rs.getString("telefono"));
+                    estudiante.setEmail(rs.getString("email"));
+                    return true;
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Ocurrió un error al buscar estudiante: " + e.getMessage());
+        }
+        return false;
+    }
+
 
     public static void main(String[] args) {
         var estudianteDao = new EstudianteDao();
@@ -52,5 +76,13 @@ public class EstudianteDao {
         System.out.println("Listado Estudiantes: ");
         List<Estudiante> estudiantes = estudianteDao.listarEstudiantes();
         estudiantes.forEach(System.out::println);
+        //Buscar por Id
+        var estudiante1 = new Estudiante(3);
+        System.out.println("Estudiante antes de la busqueda: " + estudiante1);
+        var encontrado = estudianteDao.buscarEstudiantePorId(estudiante1);
+        if(encontrado)
+            System.out.println("Estudiante encontrado: " + estudiante1);
+        else
+            System.out.println("No se encontro estudiante: " + estudiante1.getIdEstudiante());
     }
 }

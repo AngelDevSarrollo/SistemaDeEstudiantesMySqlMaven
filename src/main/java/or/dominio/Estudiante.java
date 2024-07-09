@@ -7,6 +7,13 @@ public class Estudiante {
     private String telefono;
     private String email;
 
+    public Estudiante(String nombre, String apellido, String telefono, String email) {
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.telefono = telefono;
+        this.email = email;
+    }
+
     public Estudiante(){}
 
     public Estudiante(int idEstudiante){

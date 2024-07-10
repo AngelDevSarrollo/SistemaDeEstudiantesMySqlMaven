@@ -93,20 +93,53 @@ public class EstudianteDao {
         }
         return false;
     }
+    public boolean modificarEstudiante(Estudiante estudiante){
+        PreparedStatement ps;
+        Connection con = getConexion();
+        String sql = "UPDATE estudiante SET nombre =?, apellido=?, telefono=?, email=? WHERE id_estudiante = ?";
+        try {
+            ps = con.prepareStatement(sql);
+            ps.setString(1, estudiante.getNombre());
+            ps.setString(2, estudiante.getApellido());
+            ps.setString(3, estudiante.getTelefono());
+            ps.setString(4, estudiante.getEmail());
+            ps.setInt(5, estudiante.getIdEstudiante());
+            ps.execute();
+            return true;
+        }catch (Exception e){
+            System.out.println("Error al modificar estudiante: " + e.getMessage());
+        }
+        finally {
+            try {
+                con.close();
+            }catch (Exception e){
+                System.out.println("Error al cerrar conexion: " + e.getMessage());
+            }
+        }
+        return false;
+    }
 
 
     public static void main(String[] args) {
         var estudianteDao = new EstudianteDao();
 
         //Agregar Estudiante
-        var nuevoEstudiante = new Estudiante("Carlos", "Lara", "123456788", "carlos@mail.com");
+       /* var nuevoEstudiante = new Estudiante("Carlos", "Lara", "123456788", "carlos@mail.com");
         var agregado = estudianteDao.agragarEstudiante(nuevoEstudiante);
         if(agregado)
             System.out.println("Estudiante agregado: " + nuevoEstudiante);
         else
             System.out.println("No se agrego el estudiante: " + nuevoEstudiante);
+*/
 
-
+        //Modificamos un estudiante existente (1)
+        var estucianteModificar = new Estudiante(1, "Juan Carlos", "Juarez",
+                "1234565779", "juan@mail.com");
+        var modificado = estudianteDao.modificarEstudiante(estucianteModificar);
+        if(modificado)
+            System.out.println("Estudiante modificado " + estucianteModificar);
+        else
+            System.out.println("No se modifico estudiante " + estucianteModificar);
 
         //Listar los estudiantes
         System.out.println("Listado Estudiantes: ");

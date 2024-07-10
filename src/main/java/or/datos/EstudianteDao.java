@@ -119,6 +119,28 @@ public class EstudianteDao {
         return false;
     }
 
+    public boolean eliminarEstudiante(Estudiante estudiante){
+        PreparedStatement ps;
+        Connection con = getConexion();
+        String sql = "DELETE FROM estudiante WHERE id_estudiante =?";
+        try {
+            ps = con.prepareStatement(sql);
+            ps.setInt(1, estudiante.getIdEstudiante());
+            ps.execute();
+            return true;
+        }catch (Exception e){
+            System.out.println("Error al eliminar estudiante: " + e.getMessage());
+        }
+        finally {
+            try {
+                con.close();
+            }catch (Exception e){
+                System.out.println("Error al cerrar conexion: " + e.getMessage());
+            }
+        }
+        return false;
+    }
+
 
     public static void main(String[] args) {
         var estudianteDao = new EstudianteDao();
@@ -133,14 +155,22 @@ public class EstudianteDao {
 */
 
         //Modificamos un estudiante existente (1)
-        var estucianteModificar = new Estudiante(1, "Juan Carlos", "Juarez",
+        /*var estucianteModificar = new Estudiante(1, "Juan Carlos", "Juarez",
                 "1234565779", "juan@mail.com");
         var modificado = estudianteDao.modificarEstudiante(estucianteModificar);
         if(modificado)
             System.out.println("Estudiante modificado " + estucianteModificar);
         else
             System.out.println("No se modifico estudiante " + estucianteModificar);
+*/
 
+        //Eliminar estudiante (6)
+        var estudianteEliminar = new Estudiante(6);
+        var eliminado = estudianteDao.eliminarEstudiante(estudianteEliminar);
+        if (eliminado)
+            System.out.println("Estudiante eliminado: " + estudianteEliminar);
+        else
+            System.out.println("No se elimino el estudiante: "+ estudianteEliminar);
         //Listar los estudiantes
         System.out.println("Listado Estudiantes: ");
         List<Estudiante> estudiantes = estudianteDao.listarEstudiantes();
